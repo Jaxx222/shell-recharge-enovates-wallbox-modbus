@@ -45,7 +45,7 @@ sync
 
 ### 1.3 Boot from SD
 
-1. Board disconnected from power, insert the SD card, set the **boot jumper to SD**.
+1. Board disconnected from power, insert the SD card, set the **boot jumper J3** (Between the left Networkport and the SOM Socket).
 2. Connect the network cable and switch on. The board gets an IP via DHCP (after about 1 minute).
 3. Find the IP, e.g. in the router or with
    `nmap -p22 --open 192.168.X.0/24` (MAC prefix `00:c0:08` = SECO).
@@ -86,7 +86,7 @@ poweroff
 
 ### 1.5 Boot the Enovates system again
 
-1. Power off, set the **boot jumper to eMMC**, remove the SD card (optional).
+1. Power off, set the **boot jumper J3 to eMMC**, remove the SD card (optional).
 2. Switch on. After about 2 minutes:
    ```sh
    ssh -o PubkeyAuthentication=no root@WALLBOX-IP
