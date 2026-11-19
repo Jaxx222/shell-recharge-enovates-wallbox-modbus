@@ -1,0 +1,118 @@
+# evcc: Enovates wallbox via the Modbus TCP bridge  -  replace WALLBOX-IP with the IP of the wallbox!
+# In the evcc UI: Configuration -> Charger -> "User-defined device", paste the block from "type: custom" on.
+# In evcc.yaml use it as shown.
+# Loadpoint: minCurrent 8 (LCCL: chargepoint.min.amp.per.phase=8, below that the wallbox pauses),
+#            maxCurrent = value set in the Enovates web UI (16 or 32 A).
+# No 1p/3p switching: the contactor always switches all 3 phases.
+chargers:
+  - name: enovates
+    type: custom
+    status:
+      source: combined
+      plugged:
+        source: modbus
+        uri: WALLBOX-IP:502
+        id: 1
+        register:
+          address: 8
+          type: holding
+          decode: uint16
+      charging:
+        source: modbus
+        uri: WALLBOX-IP:502
+        id: 1
+        register:
+          address: 9
+          type: holding
+          decode: uint16
+    enabled:
+      source: modbus
+      uri: WALLBOX-IP:502
+      id: 1
+      register:
+        address: 11
+        type: holding
+        decode: uint16
+    enable:
+      source: modbus
+      uri: WALLBOX-IP:502
+      id: 1
+      register:
+        address: 11
+        type: writesingle
+        encoding: uint16
+    maxcurrent:
+      source: modbus
+      uri: WALLBOX-IP:502
+      id: 1
+      register:
+        address: 10
+        type: writesingle
+        encoding: uint16
+    power:
+      source: modbus
+      uri: WALLBOX-IP:502
+      id: 1
+      register:
+        address: 2
+        type: holding
+        decode: uint16
+    energy:   # meter reading in kWh (register in Wh)
+      source: modbus
+      uri: WALLBOX-IP:502
+      id: 1
+      register:
+        address: 19
+        type: holding
+        decode: uint32
+      scale: 0.001
+    currents:   # L1..L3 in A (registers in 0.01 A)
+      - source: modbus
+        uri: WALLBOX-IP:502
+        id: 1
+        register:
+          address: 13
+          type: holding
+          decode: uint16
+        scale: 0.01
+      - source: modbus
+        uri: WALLBOX-IP:502
+        id: 1
+        register:
+          address: 14
+          type: holding
+          decode: uint16
+        scale: 0.01
+      - source: modbus
+        uri: WALLBOX-IP:502
+        id: 1
+        register:
+          address: 15
+          type: holding
+          decode: uint16
+        scale: 0.01
+    voltages:   # L1..L3 in V (registers in 0.1 V)
+      - source: modbus
+        uri: WALLBOX-IP:502
+        id: 1
+        register:
+          address: 16
+          type: holding
+          decode: uint16
+        scale: 0.1
+      - source: modbus
+        uri: WALLBOX-IP:502
+        id: 1
+        register:
+          address: 17
+          type: holding
+          decode: uint16
+        scale: 0.1
+      - source: modbus
+        uri: WALLBOX-IP:502
+        id: 1
+        register:
+          address: 18
+          type: holding
+          decode: uint16
+        scale: 0.1

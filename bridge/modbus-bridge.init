@@ -1,0 +1,42 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          modbus-bridge
+# Required-Start:    $network
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Enovates LCCL <-> Modbus TCP bridge
+### END INIT INFO
+
+DAEMON=/opt/charger/modbus-bridge/modbus_bridge.py
+PIDFILE=/var/run/modbus-bridge.pid
+LOGFILE=/var/log/modbus-bridge.log
+
+running() {
+    [ -f $PIDFILE ] && kill -0 "$(cat $PIDFILE)" 2>/dev/null
+}
+
+case "$1" in
+  start)
+    if running; then echo "modbus-bridge already running"; exit 0; fi
+    # keep the log small: start a new one on every start
+    [ -f $LOGFILE ] && mv -f $LOGFILE $LOGFILE.old
+    nohup /usr/bin/python $DAEMON >> $LOGFILE 2>&1 &
+    echo $! > $PIDFILE
+    echo "modbus-bridge started (pid $!)"
+    ;;
+  stop)
+    if running; then kill "$(cat $PIDFILE)"; sleep 1; fi
+    rm -f $PIDFILE
+    echo "modbus-bridge stopped"
+    ;;
+  restart)
+    $0 stop; $0 start
+    ;;
+  status)
+    if running; then echo "running (pid $(cat $PIDFILE))"; else echo "stopped"; exit 3; fi
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"; exit 1
+    ;;
+esac
